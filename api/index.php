@@ -32,9 +32,16 @@ if ($isVercel) {
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
 // 4. FIX VERCEL: Paksa clear compiled views agar tidak error [view] does not exist
+// Ini penting karena /tmp di Vercel kadang retain file corrupt antar deployment
 if ($isVercel) {
     try {
+        // Clear view finder cache
         $app->make('view')->getFinder()->flush();
+        
+        // Clear config cache jika ada
+        if (file_exists('/tmp/storage/framework/config.php')) {
+            @unlink('/tmp/storage/framework/config.php');
+        }
     } catch (\Exception $e) {
         // Ignore error jika service belum ready
     }
