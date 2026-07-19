@@ -9,12 +9,13 @@ $isVercel = getenv('VERCEL') === '1'
          || str_contains(getenv('HOME') ?? '', '/var/task');
 
 if ($isVercel) {
+    // Buat direktori temporary yang dibutuhkan Laravel
     $tmpDirs = [
         '/tmp/storage',
         '/tmp/storage/framework',
         '/tmp/storage/framework/cache',
         '/tmp/storage/framework/sessions', 
-        '/tmp/storage/framework/views',
+        '/tmp/storage/framework/views', // PENTING: Untuk cache blade
         '/tmp/storage/logs',
     ];
     
@@ -22,18 +23,15 @@ if ($isVercel) {
         if (!is_dir($dir)) @mkdir($dir, 0755, true);
     }
     
+    // Set environment variable agar Laravel pakai /tmp
     $_ENV['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
+    putenv('LARAVEL_STORAGE_PATH=/tmp/storage');
 }
 
 // 3. Bootstrap Aplikasi Laravel
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
-// 4. FIX VERCEL: Paksa clear compiled views agar tidak error [view] does not exist
-if ($isVercel) {
-    $app->make('view')->getFinder()->flush();
-}
-
-// 5. Handle Request & Response
+// 4. Handle Request & Response
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
