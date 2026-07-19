@@ -28,7 +28,12 @@ if ($isVercel) {
 // 3. Bootstrap Aplikasi Laravel
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
-// 4. Handle Request & Response
+// 4. FIX VERCEL: Paksa clear compiled views agar tidak error [view] does not exist
+if ($isVercel) {
+    $app->make('view')->getFinder()->flush();
+}
+
+// 5. Handle Request & Response
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
