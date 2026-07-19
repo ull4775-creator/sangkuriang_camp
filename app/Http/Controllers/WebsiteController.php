@@ -8,11 +8,14 @@ class WebsiteController extends Controller
 {
     public function index()
     {
-        // Load data products
+        // Load data products dengan path absolut
         $products = require base_path('app/Data/products_data.php');
         
-        // Filter hanya array
-        $products = collect($products)->filter(fn($item) => is_array($item))->values()->toArray();
+        // Filter hanya array untuk mencegah error
+        $products = collect($products)
+            ->filter(fn($item) => is_array($item)) 
+            ->values() 
+            ->toArray();
 
         return view('welcome', compact('products'));
     }
@@ -21,9 +24,9 @@ class WebsiteController extends Controller
     {
         $products = require base_path('app/Data/products_data.php');
         $product = collect($products)->firstWhere('id', (int)$id);
-        
+
         if (!$product) abort(404);
-        
+
         return response()->json($product);
     }
 }
