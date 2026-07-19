@@ -3,7 +3,7 @@
 // 1. Load Composer Autoload
 require __DIR__ . '/../vendor/autoload.php';
 
-// 2. Deteksi Environment Vercel & Arahkan Storage ke /tmp
+// 2. Deteksi Environment Vercel & Arahkan Storage ke /tmp SEBELUM BOOTSTRAP
 $isVercel = getenv('VERCEL') === '1' 
          || getenv('IS_VERCEL') === '1' 
          || str_contains(getenv('HOME') ?? '', '/var/task');
@@ -28,7 +28,7 @@ if ($isVercel) {
     putenv('LARAVEL_STORAGE_PATH=/tmp/storage');
 }
 
-// 3. Bootstrap Aplikasi Laravel
+// 3. Bootstrap Aplikasi Laravel (Sekarang storage sudah mengarah ke /tmp)
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
 // 4. FIX VERCEL: Paksa clear compiled views agar tidak error [view] does not exist
