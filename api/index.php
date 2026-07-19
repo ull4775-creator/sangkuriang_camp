@@ -15,7 +15,7 @@ if ($isVercel) {
         '/tmp/storage/framework',
         '/tmp/storage/framework/cache',
         '/tmp/storage/framework/sessions', 
-        '/tmp/storage/framework/views', // PENTING: Untuk cache blade
+        '/tmp/storage/framework/views', // KRUSIAL: Untuk cache Blade
         '/tmp/storage/logs',
     ];
     
